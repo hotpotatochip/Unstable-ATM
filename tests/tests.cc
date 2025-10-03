@@ -74,3 +74,52 @@ TEST_CASE("Example: Print Prompt Ledger", "[ex-3]") {
   atm.PrintLedger("./prompt.txt", 12345678, 1234);
   REQUIRE(CompareFiles("./ex-1.txt", "./prompt.txt"));
 }
+
+TEST_CASE("TEST1", "[Test1]") {   
+  Atm atm;   atm.RegisterAccount(11112222, 1234, "Alice Johnson", 500.00);   
+  atm.RegisterAccount(33334444, 5678, "Bob Smith", 1000.00);    
+  REQUIRE(atm.CheckBalance(11112222, 1234) == 500.00);   
+  REQUIRE(atm.CheckBalance(33334444, 5678) == 1000.00);    
+  atm.WithdrawCash(11112222, 1234, 100.00);   
+  REQUIRE(atm.CheckBalance(11112222, 1234) == 400.00);    
+  atm.DepositCash(33334444, 5678, 200.00);   
+  REQUIRE(atm.CheckBalance(33334444, 5678) == 1200.00);    
+  atm.PrintLedger("./test1.txt", 11112222, 1234);   
+  atm.PrintLedger("./test2.txt", 33334444, 5678);    
+  REQUIRE(CompareFiles("./test1_expected.txt", "./test1.txt"));   
+  REQUIRE(CompareFiles("./test2_expected.txt", "./test2.txt")); 
+}  
+  
+TEST_CASE("TEST2", "[Test2]") {   
+  Atm atm;   
+  atm.RegisterAccount(55556666, 4321, "Charlie Brown", 750.00);    
+  REQUIRE(atm.CheckBalance(55556666, 4321) == 750.00);   
+  REQUIRE_THROWS_AS(atm.WithdrawCash(55556666, 2323, 50.00),                     
+  std::invalid_argument);   
+  REQUIRE_THROWS_AS(atm.WithdrawCash(33335555, 4321, 50.00),                     
+  std::invalid_argument);   
+  REQUIRE_THROWS_AS(atm.WithdrawCash(55556666, 4321, -50.00),                     
+  std::invalid_argument);   
+  REQUIRE_THROWS_AS(atm.WithdrawCash(55556666, 4321, 800.00),                     
+  std::runtime_error); }  
+  
+TEST_CASE("TEST3", "[Test3]") {   
+  Atm atm;   
+  atm.RegisterAccount(55556666, 4321, "Charlie Brown", 750.00);   
+  REQUIRE(atm.CheckBalance(55556666, 4321) == 750.00);   
+  REQUIRE_THROWS_AS(atm.DepositCash(55556666, 2323, 50.00),                     
+  std::invalid_argument);   
+  REQUIRE_THROWS_AS(atm.DepositCash(33335555, 4321, 50.00),                     
+  std::invalid_argument);   
+  REQUIRE_THROWS_AS(atm.DepositCash(55556666, 4321, -50.00),                     
+  std::invalid_argument); }  
+  
+TEST_CASE("TEST4", "[Test4]") {   
+  Atm atm;   
+  atm.RegisterAccount(55556666, 4321, "Charlie Brown", 750.00);   
+  REQUIRE(atm.CheckBalance(55556666, 4321) == 750.00);  
+  REQUIRE_THROWS_AS(atm.PrintLedger("./test4.txt", 55556666, 2323),                     
+  std::invalid_argument);   
+  REQUIRE_THROWS_AS(atm.PrintLedger("./test4.txt", 33335555, 4321),                     
+  std::invalid_argument); 
+}
